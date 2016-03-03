@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         DownloadData downloadData = new DownloadData();
-        downloadData.execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
+        downloadData.execute("http://bbax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
     }
 
     @Override
@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
             } catch (IOException e){
                 Log.d("DownloadData", "IO Exception reading data" + e.getMessage());
+                e.printStackTrace();
             } catch (SecurityException e){
                 Log.d("DownloadData","Security exception. Need permission?" + e.getMessage());
             }
