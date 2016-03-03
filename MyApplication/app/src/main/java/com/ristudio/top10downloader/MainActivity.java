@@ -4,8 +4,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +49,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class DownloadData extends AsyncTask<String, Void, String>{
+        private String mFileContent;
 
+        @Override
+        protected String doInBackground(String... params) {
+            mFileContent = downloadXMLFile(params[0]);
+            if (mFileContent == null){
+                Log.d("DownloadData", "error downloading");
+            }
+            return mFileContent;
+        }
+
+        private String downloadXMLFile (String urlPath){
+            StringBuilder tempBuffer = new StringBuilder();
+            try {
+                URL url = new URL(urlPath);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //
+                int respone = connection.getResponseCode(); // 404 error or whatever
+                Log.d("DownloadData", "The respone code was: " + respone);
+                // define the input stream which is connected to the above 'connection'
+                InputStream is = connection.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is);
+
+                int charRead;
+                char[] inputBuffer = new char[500];//temporary buffer, allocating space at this stage to read 500 bytes at time
+                while (true){
+                    charRead = isr.read(inputBuffer);
+                    if (charRead <= 0){
+                        break;
+                    }
+                    tempBuffer.append(String.copyValueOf(inputBuffer, 0, charRead));
+                }
+
+                return tempBuffer.toString();
+
+            } catch (IOException e){
+                Log.d("DownloadData", "IO Exception reading data" + e.getMessage());
+            }
+        }
     }
 }
