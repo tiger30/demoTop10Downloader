@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        DownloadData downloadData = new DownloadData();
+        downloadData.execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
     }
 
     @Override
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Toast toast = Toast.makeText(getApplicationContext(),"Why are you clicking setting?", Toast.LENGTH_LONG);//4fun
+            toast.show();//4fun
             return true;
         }
 
@@ -58,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("DownloadData", "error downloading");
             }
             return mFileContent;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.d("DownloadData", "Result was" + result);
         }
 
         private String downloadXMLFile (String urlPath){
@@ -86,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e){
                 Log.d("DownloadData", "IO Exception reading data" + e.getMessage());
             }
+
+            return null;
         }
     }
 }
