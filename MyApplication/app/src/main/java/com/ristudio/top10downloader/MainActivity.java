@@ -95,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
             } catch (IOException e){
                 Log.d("DownloadData", "IO Exception reading data" + e.getMessage());
+            } catch (SecurityException e){
+                Log.d("DownloadData","Security exception. Need permission?" + e.getMessage());
             }
 
             return null;
