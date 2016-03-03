@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -17,6 +18,8 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView xmlTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,8 +27,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        xmlTextView = (TextView) findViewById(R.id.xmlTextView);
+
         DownloadData downloadData = new DownloadData();
-        downloadData.execute("http://bbax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
+        downloadData.execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
     }
 
     @Override
@@ -67,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.d("DownloadData", "Result was" + result);
+            Log.d("DownloadData", "Result was " + result);
+            xmlTextView.setText(mFileContent);
         }
 
         private String downloadXMLFile (String urlPath){
@@ -95,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
             } catch (IOException e){
                 Log.d("DownloadData", "IO Exception reading data" + e.getMessage());
-                e.printStackTrace();
+//                e.printStackTrace();
             } catch (SecurityException e){
                 Log.d("DownloadData","Security exception. Need permission?" + e.getMessage());
             }
