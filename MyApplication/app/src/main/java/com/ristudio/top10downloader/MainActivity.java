@@ -7,7 +7,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -18,7 +20,11 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView xmlTextView;
+    //    private TextView xmlTextView;
+    private String mFileContent;
+
+    private Button btnParse;
+    private ListView listApps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +33,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        xmlTextView = (TextView) findViewById(R.id.xmlTextView);
+//        xmlTextView = (TextView) findViewById(R.id.xmlTextView);
+        btnParse = (Button) findViewById(R.id.btnParse);
+        btnParse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseApplication parseApplication = new ParseApplication(mFileContent);
+                parseApplication.process();
+            }
+        });
+        listApps = (ListView) findViewById(R.id.listApps);
 
         DownloadData downloadData = new DownloadData();
         downloadData.execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
@@ -49,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Toast toast = Toast.makeText(getApplicationContext(),"Why are you clicking setting?", Toast.LENGTH_LONG);//4fun
+            Toast toast = Toast.makeText(getApplicationContext(), "Why are you clicking setting?", Toast.LENGTH_LONG);//4fun
             toast.show();//4fun
             return true;
         }
@@ -57,13 +72,22 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class DownloadData extends AsyncTask<String, Void, String>{
-        private String mFileContent;
+    private void onClickButtonParse() {
+        btnParse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
+    }
+
+    private class DownloadData extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
             mFileContent = downloadXMLFile(params[0]);
-            if (mFileContent == null){
+            if (mFileContent == null) {
                 Log.d("DownloadData", "error downloading");
             }
             return mFileContent;
@@ -73,10 +97,10 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             Log.d("DownloadData", "Result was " + result);
-            xmlTextView.setText(mFileContent);
+//            xmlTextView.setText(mFileContent);
         }
 
-        private String downloadXMLFile (String urlPath){
+        private String downloadXMLFile(String urlPath) {
             StringBuilder tempBuffer = new StringBuilder();
             try {
                 URL url = new URL(urlPath);
@@ -89,9 +113,9 @@ public class MainActivity extends AppCompatActivity {
 
                 int charRead;
                 char[] inputBuffer = new char[500];//temporary buffer, allocating space at this stage to read 500 bytes at time
-                while (true){
+                while (true) {
                     charRead = isr.read(inputBuffer);
-                    if (charRead <= 0){
+                    if (charRead <= 0) {
                         break;
                     }
                     tempBuffer.append(String.copyValueOf(inputBuffer, 0, charRead));
@@ -99,14 +123,15 @@ public class MainActivity extends AppCompatActivity {
 
                 return tempBuffer.toString();
 
-            } catch (IOException e){
+            } catch (IOException e) {
                 Log.d("DownloadData", "IO Exception reading data" + e.getMessage());
 //                e.printStackTrace();
-            } catch (SecurityException e){
-                Log.d("DownloadData","Security exception. Need permission?" + e.getMessage());
+            } catch (SecurityException e) {
+                Log.d("DownloadData", "Security exception. Need permission?" + e.getMessage());
             }
 
             return null;
         }
     }
+
 }
