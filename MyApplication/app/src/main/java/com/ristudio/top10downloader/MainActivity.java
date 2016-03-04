@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -40,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ParseApplication parseApplication = new ParseApplication(mFileContent);
                 parseApplication.process();
+                ArrayAdapter<Application> arrayAdapter = new ArrayAdapter<Application>(
+                        MainActivity.this, R.layout.list_item, parseApplication.getApplications());
+                listApps.setAdapter(arrayAdapter);
             }
         });
         listApps = (ListView) findViewById(R.id.listApps);
